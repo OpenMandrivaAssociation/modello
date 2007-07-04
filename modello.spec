@@ -28,7 +28,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-%define _without_gcj_support 1
+%define _with_gcj_support 1
 %define gcj_support %{?_with_gcj_support:1}%{!?_with_gcj_support:%{?_without_gcj_support:0}%{!?_without_gcj_support:%{?_gcj_support:%{_gcj_support}}%{!?_gcj_support:0}}}
 
 
@@ -39,7 +39,7 @@
 
 Name:           modello
 Version:        1.0
-Release:        %mkrel 0.1.a8.4.3.1
+Release:        %mkrel 0.1.a8.4.3.2
 Epoch:          0
 Summary:        Modello Data Model toolkit
 License:        MIT  
@@ -112,7 +112,7 @@ Java model to [JPOX|http://www.jpox.org/] Mapping.
 
 %package javadoc
 Summary:        Javadoc for %{name}
-Group:          Development/Documentation
+Group:          Development/Java
 Requires(post):   /bin/rm,/bin/ln
 Requires(postun): /bin/rm
 
