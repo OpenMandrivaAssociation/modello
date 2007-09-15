@@ -39,7 +39,7 @@
 
 Name:           modello
 Version:        1.0
-Release:        %mkrel 0.1.a8.4.3.2
+Release:        %mkrel 0.1.a8.4.3.3
 Epoch:          0
 Summary:        Modello Data Model toolkit
 License:        MIT  
@@ -56,8 +56,6 @@ Patch0:                 modello-hibernateold-artifactid-fix.patch
 Patch1:                 modello-build-all-plugins.patch
 %if %{gcj_support}
 BuildRequires:          java-gcj-compat-devel
-Requires(post):         java-gcj-compat
-Requires(postun):       java-gcj-compat
 %endif
 %if ! %{gcj_support}
 BuildArch:      noarch
