@@ -39,7 +39,7 @@
 
 Name:           modello
 Version:        1.0
-Release:        %mkrel 0.1.a8.4.3.3
+Release:        %mkrel 0.1.a8.4.3.4
 Epoch:          0
 Summary:        Modello Data Model toolkit
 License:        MIT  
@@ -63,7 +63,7 @@ BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildRequires:  ant >= 0:1.6
-BuildRequires:  jpackage-utils >= 0:1.7.2
+BuildRequires:  java-rpmbuild >= 0:1.7.2
 BuildRequires:  maven2 >= 2.0.4-9
 BuildRequires:  maven2-plugin-compiler
 BuildRequires:  maven2-plugin-install
