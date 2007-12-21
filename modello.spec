@@ -60,6 +60,7 @@ BuildRequires:          java-gcj-compat-devel
 %if ! %{gcj_support}
 BuildArch:      noarch
 %endif
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildRequires:  ant >= 0:1.6
 BuildRequires:  java-rpmbuild >= 0:1.7.2
