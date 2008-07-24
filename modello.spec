@@ -39,7 +39,7 @@
 
 Name:           modello
 Version:        1.0
-Release:        %mkrel 0.1.a8.4.3.4
+Release:        %mkrel 0.1.a8.4.3.5
 Epoch:          0
 Summary:        Modello Data Model toolkit
 License:        MIT  
