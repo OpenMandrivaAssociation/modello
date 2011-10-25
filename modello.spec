@@ -28,76 +28,72 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-%define _with_gcj_support 1
-%define gcj_support %{?_with_gcj_support:1}%{!?_with_gcj_support:%{?_without_gcj_support:0}%{!?_without_gcj_support:%{?_gcj_support:%{_gcj_support}}%{!?_gcj_support:0}}}
-
-
-%define repo_dir    .m2/repository
-
-%define namedversion 1.0-alpha-8
-%define maven_settings_file %{_builddir}/%{name}-%{namedversion}/settings.xml
-
 Name:           modello
-Version:        1.0
-Release:        %mkrel 0.1.a8.4.3.5
-Epoch:          0
+Version:        1.4.1
+Release:        2
 Summary:        Modello Data Model toolkit
-License:        MIT  
+License:        MIT
 Group:          Development/Java
 URL:            http://modello.codehaus.org/
-Source0:        %{name}-%{namedversion}-src.tar.gz
-# svn export svn://svn.modello.codehaus.org/modello/tags/modello-1.0-alpha-8/
-# tar czf modello-1.0-alpha-8-src.tar.gz modello-1.0-alpha-8/
-Source1:        modello.script
+Source0:        http://repo2.maven.org/maven2/org/codehaus/%{name}/%{name}/%{version}/%{name}-%{version}-source-release.zip
 
-Source2:                %{name}-jpp-depmap.xml
+Source2:        %{name}-jpp-depmap.xml
 
-Patch0:                 modello-hibernateold-artifactid-fix.patch
-Patch1:                 modello-build-all-plugins.patch
-%if %{gcj_support}
-BuildRequires:          java-gcj-compat-devel
-%endif
-%if ! %{gcj_support}
+Patch0:         0001-Use-public-function-for-component-lookup.patch
+
 BuildArch:      noarch
-%endif
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildRequires:  ant >= 0:1.6
-BuildRequires:  java-rpmbuild >= 0:1.7.2
+BuildRequires:  jpackage-utils >= 0:1.7.2
 BuildRequires:  maven2 >= 2.0.4-9
-BuildRequires:  maven2-plugin-compiler
-BuildRequires:  maven2-plugin-install
-BuildRequires:  maven2-plugin-jar
-BuildRequires:  maven2-plugin-javadoc
-BuildRequires:  maven2-plugin-release
-BuildRequires:  maven2-plugin-resources
-BuildRequires:  maven2-plugin-surefire
-BuildRequires:  maven2-plugin-plugin
+BuildRequires:  maven-assembly-plugin
+BuildRequires:  maven-compiler-plugin
+BuildRequires:  maven-install-plugin
+BuildRequires:  maven-jar-plugin
+BuildRequires:  maven-javadoc-plugin
+BuildRequires:  maven-resources-plugin
+BuildRequires:  maven-surefire-plugin
+BuildRequires:  maven-site-plugin
+BuildRequires:  maven-surefire-provider-junit
+BuildRequires:  maven-dependency-plugin
+BuildRequires:  maven-plugin-plugin
+BuildRequires:  maven-shared-reporting-impl
+BuildRequires:  maven-shared-invoker
 BuildRequires:  classworlds >= 0:1.1
-BuildRequires:  dtdparser
 BuildRequires:  plexus-container-default
 BuildRequires:  plexus-utils
 BuildRequires:  plexus-velocity
 BuildRequires:  velocity
+BuildRequires:  maven-doxia
+BuildRequires:  maven-doxia-sitetools
+BuildRequires:  maven-doxia-tools
+BuildRequires:  plexus-build-api
+BuildRequires:  ws-jaxme
+BuildRequires:  xmlunit
+BuildRequires:  jpa_api = 3.0
+BuildRequires:  geronimo-parent-poms
 
 Requires:       classworlds >= 0:1.1
-Requires:       dtdparser
-Requires:       plexus-container-default
+Requires:       plexus-containers-container-default
+Requires:       plexus-build-api
 Requires:       plexus-utils
 Requires:       plexus-velocity
 Requires:       velocity
+Requires:       guava
+Requires:       xbean
 
-Requires(post):    jpackage-utils >= 0:1.7.2
-Requires(postun):  jpackage-utils >= 0:1.7.2
+Requires:          jpackage-utils
+Requires(post):    jpackage-utils
+Requires(postun):  jpackage-utils
 
-Provides:       modello-maven-plugin = %{epoch}:%{version}-%{release}
+Provides:       modello-maven-plugin = %{version}-%{release}
 Obsoletes:      modello-maven-plugin < 0:1.0-0.a8.3jpp
 
 %description
-Modello is a Data Model toolkit in use by the 
+Modello is a Data Model toolkit in use by the
 http://maven.apache.org/maven2.
-It all starts with the Data Model. Once a data model is defined, 
-the toolkit can be used to generate any of the following at compile 
+It all starts with the Data Model. Once a data model is defined,
+the toolkit can be used to generate any of the following at compile
 time.
 Java POJOs of the model.
 Java POJOs to XML Writer (provided via xpp3 or dom4j).
@@ -111,125 +107,78 @@ Java model to [JPOX|http://www.jpox.org/] Mapping.
 %package javadoc
 Summary:        Javadoc for %{name}
 Group:          Development/Java
-Requires(post):   /bin/rm,/bin/ln
-Requires(postun): /bin/rm
+Requires:       jpackage-utils
 
 %description javadoc
-Javadoc for %{name}.
+API documentation for %{name}.
 
 %prep
-%setup -q -n %{name}-%{namedversion}
-%patch0 -b .sav
-%patch1 -b .sav
+%setup -q -n %{name}-%{version}
 
-find . -name release-pom.xml -exec rm -f '{}' \;
+# fix test compilation failure with new plexus-containers
+# not really needed now because we are skipping tests for other
+# problems...
+#%%patch0 -p1
 
-for i in modello-plugins-sandbox/modello-plugin-ldap/src/test/java/org/codehaus/modello/plugin/ldap/ObjStateFactoryModelloGeneratorTest.java \
-         modello-plugins-sandbox/modello-plugin-ldap/src/test/java/org/codehaus/modello/plugin/ldap/LdapSchemaGeneratorTest.java \
-         modello-plugins-sandbox/modello-plugin-ojb/src/test/java/org/codehaus/modello/plugin/ojb/OjbModelloGeneratorTest.java \
-         modello-plugins-sandbox/modello-plugin-stash/src/test/java/org/codehaus/modello/plugin/stash/StashModelloGeneratorTest.java \
-         modello-plugins-sandbox/modello-plugin-hibernate-store/src/test/java/org/codehaus/modello/plugin/hibernate/HibernateModelloGeneratorTest.java; do
-        sed -i -e s:org.codehaus.modello.ModelloGeneratorTest:org.codehaus.modello.AbstractModelloGeneratorTest:g $i
-        sed -i -e s:"extends ModelloGeneratorTest":"extends AbstractModelloGeneratorTest":g $i
-done
 
 %build
 
 export MAVEN_REPO_LOCAL=$(pwd)/.m2/repository
 mkdir -p $MAVEN_REPO_LOCAL
 
+# skip tests because we have too old xmlunit in Fedora now (1.0.8)
 mvn-jpp \
         -e \
-                -Dmaven.repo.local=$MAVEN_REPO_LOCAL \
-                -Dmaven2.jpp.depmap.file=%{SOURCE2} \
-        -Dmaven.test.failure.ignore=true \
-        install javadoc:javadoc
+        -Dmaven.repo.local=$MAVEN_REPO_LOCAL \
+        -Dmaven2.jpp.depmap.file=%{SOURCE2} \
+        -Dmaven.test.skip=true \
+        install javadoc:aggregate
 
 %install
-rm -rf $RPM_BUILD_ROOT
-
-# poms
-install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/maven2/poms
-for i in `find . -name pom.xml | grep -v \\\./pom.xml`; do
-        cp -p $i $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.`basename \`dirname $i\``.pom
-done
-
-# Depmap fragments
-for i in `find . -name pom.xml | grep -v \\\./pom.xml |  grep -v modello-plugins-sandbox`; do
+# poms and depmap fragments
+install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
+for i in `find . -name pom.xml -not -path ./pom.xml -not -path "*src/it/*"`; do
     # i is in format ..../artifactid/pom.xml
+    cp -p $i $RPM_BUILD_ROOT%{_mavenpomdir}/JPP.`basename \`dirname $i\``.pom
+
     artifactname=`basename \`dirname $i\` | sed -e s:^modello-::g`
-
-    %add_to_maven_depmap org.codehaus.modello modello-$artifactname %{namedversion} JPP/%{name} $artifactname
+    %add_to_maven_depmap org.codehaus.modello modello-$artifactname %{version} JPP/%{name} $artifactname
 done
 
-# sandbox plugins are a different version
-for i in `find . -name pom.xml | grep modello-plugins-sandbox`; do
-        # i is in format ..../artifactid/pom.xml
-        artifactname=`basename \`dirname $i\` | sed -e s:^modello-::g`
-
-        %add_to_maven_depmap org.codehaus.modello modello-$artifactname 1.0-alpha-4-SNAPSHOT JPP/%{name} $artifactname
-done
-
-cp -p pom.xml $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.modello-modello.pom
-%add_to_maven_depmap org.codehaus.modello modello %{namedversion} JPP/%{name} modello
+cp -p pom.xml $RPM_BUILD_ROOT%{_mavenpomdir}/JPP.modello-modello.pom
+%add_to_maven_depmap org.codehaus.modello modello %{version} JPP/%{name} modello
 
 # script
 install -d -m 755 $RPM_BUILD_ROOT%{_bindir}
-install -m 755 %{SOURCE1} $RPM_BUILD_ROOT%{_bindir}/%{name}
+%jpackage_script org.codehaus.modello.ModelloCli "" ""  "modello/core:modello/plugin-xpp3:modello/plugin-xml:guava:xbean:plexus/containers-container-default:plexus/utils:plexus/classworlds)" %{name} true
 
 # jars
+
 install -d -m 755 $RPM_BUILD_ROOT%{_javadir}/%{name}
-for jar in $(find -type f -name "*.jar" | grep -E target/.*.jar); do 
-        install -m 644 $jar $RPM_BUILD_ROOT%{_javadir}/%{name}/`basename $jar |sed -e s:modello-::g`
+for jar in $(find -type f -name "*-%{version}.jar" | grep -E target/.*.jar); do
+        install -m 644 $jar $RPM_BUILD_ROOT%{_javadir}/%{name}/`basename $jar |sed -e s:modello-::g|sed -e s:-%{version}::g`
 done
-
-(cd $RPM_BUILD_ROOT%{_javadir}/%{name} && for jar in *-%{namedversion}*; do ln -sf ${jar} `echo $jar| sed  "s|-%{namedversion}||g"`; done)
-
-# Do it again for sandbox plugins, which have a different version
-(cd $RPM_BUILD_ROOT%{_javadir}/%{name} && for jar in *-1.0-alpha-4-SNAPSHOT*; do ln -sf ${jar} `echo $jar| sed  "s|-1.0-alpha-4-SNAPSHOT||g"`; done)
 
 # javadoc
 install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-for target in $(find -type d -name target); do
-  install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}/`basename \`dirname $target\` | sed -e s:modello-::g`
-  cp -pr $target/site/apidocs/* $jar $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}/`basename \`dirname $target\` | sed -e s:modello-::g`
-done
-ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name}
-
-%if %{gcj_support}
-%{_bindir}/aot-compile-rpm
-%endif
-
-%clean
-rm -rf $RPM_BUILD_ROOT
+cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
+(cd $RPM_BUILD_ROOT%{_javadocdir} && ln -sf %{name}-%{version} %{name})
 
 %post
-%if %{gcj_support}
-%{update_gcjdb}
-%endif
 %update_maven_depmap
 
 %postun
-%if %{gcj_support}
-%{clean_gcjdb}
-%endif
 %update_maven_depmap
-
 
 %files
 %defattr(-,root,root,-)
-%{_datadir}/maven2
-%dir %{_javadir}/%{name}
+%{_mavenpomdir}/*
 %{_javadir}/%{name}
-%attr(755,root,root) %{_bindir}/*
-%{_mavendepmapfragdir}
-%if %{gcj_support}
-%attr(-,root,root) %dir %{_libdir}/gcj/%{name}
-%attr(-,root,root) %{_libdir}/gcj/%{name}/*.jar.*
-%endif
-%config(noreplace) /etc/maven/fragments/modello
-
+%{_bindir}/*
+%config(noreplace) %{_mavendepmapfragdir}/*
 
 %files javadoc
 %defattr(-,root,root,-)
-%doc %{_javadocdir}/*
+%{_javadocdir}/%{name}-%{version}
+%{_javadocdir}/%{name}
+
