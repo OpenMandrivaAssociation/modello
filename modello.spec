@@ -30,7 +30,7 @@
 
 Name:           modello
 Version:        1.4.1
-Release:        2
+Release:        4
 Summary:        Modello Data Model toolkit
 License:        MIT
 Group:          Development/Java
