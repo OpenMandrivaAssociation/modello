@@ -1,0 +1,109 @@
+From f2b1ab1a8981da2799a81bf91b2e876eb83502df Mon Sep 17 00:00:00 2001
+From: Stanislav Ochotnicky <sochotnicky@redhat.com>
+Date: Tue, 20 Jul 2010 15:04:13 +0200
+Subject: [PATCH] Use public function for component lookup
+
+---
+ .../modello/plugin/dom4j/Dom4jGeneratorTest.java   |    2 +-
+ .../xml/stax/AbstractStaxGeneratorTestCase.java    |    2 +-
+ .../modello/plugin/xdoc/XdocGeneratorTest.java     |    2 +-
+ .../modello/plugins/xml/XmlModelloPluginTest.java  |    2 +-
+ .../generator/xml/xpp3/_AbstractElementTest.java   |    2 +-
+ .../plugin/xsd/ChangesXsdGeneratorTest.java        |    2 +-
+ .../modello/plugin/xsd/XsdGeneratorTest.java       |    2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/modello-plugins/modello-plugin-dom4j/src/test/java/org/codehaus/modello/plugin/dom4j/Dom4jGeneratorTest.java b/modello-plugins/modello-plugin-dom4j/src/test/java/org/codehaus/modello/plugin/dom4j/Dom4jGeneratorTest.java
+index f57f4c3..2d5ff83 100644
+--- a/modello-plugins/modello-plugin-dom4j/src/test/java/org/codehaus/modello/plugin/dom4j/Dom4jGeneratorTest.java
++++ b/modello-plugins/modello-plugin-dom4j/src/test/java/org/codehaus/modello/plugin/dom4j/Dom4jGeneratorTest.java
+@@ -49,7 +49,7 @@ public class Dom4jGeneratorTest
+     public void testDom4jGenerator()
+         throws Throwable
+     {
+-        ModelloCore modello = (ModelloCore) container.lookup( ModelloCore.ROLE );
++        ModelloCore modello = (ModelloCore) getContainer().lookup( ModelloCore.ROLE );
+ 
+         Model model = modello.loadModel( getXmlResourceReader( "/maven.mdo" ) );
+ 
+diff --git a/modello-plugins/modello-plugin-stax/src/test/java/org/codehaus/modello/generator/xml/stax/AbstractStaxGeneratorTestCase.java b/modello-plugins/modello-plugin-stax/src/test/java/org/codehaus/modello/generator/xml/stax/AbstractStaxGeneratorTestCase.java
+index e3d573b..85c6c9c 100644
+--- a/modello-plugins/modello-plugin-stax/src/test/java/org/codehaus/modello/generator/xml/stax/AbstractStaxGeneratorTestCase.java
++++ b/modello-plugins/modello-plugin-stax/src/test/java/org/codehaus/modello/generator/xml/stax/AbstractStaxGeneratorTestCase.java
+@@ -45,7 +45,7 @@ public abstract class AbstractStaxGeneratorTestCase
+     {
+         super.setUp();
+ 
+-        modello = (ModelloCore) container.lookup( ModelloCore.ROLE );
++        modello = (ModelloCore) getContainer().lookup( ModelloCore.ROLE );
+     }
+ 
+     protected void verifyModel( Model model, String className )
+diff --git a/modello-plugins/modello-plugin-xdoc/src/test/java/org/codehaus/modello/plugin/xdoc/XdocGeneratorTest.java b/modello-plugins/modello-plugin-xdoc/src/test/java/org/codehaus/modello/plugin/xdoc/XdocGeneratorTest.java
+index 62f86c4..b8a71e4 100644
+--- a/modello-plugins/modello-plugin-xdoc/src/test/java/org/codehaus/modello/plugin/xdoc/XdocGeneratorTest.java
++++ b/modello-plugins/modello-plugin-xdoc/src/test/java/org/codehaus/modello/plugin/xdoc/XdocGeneratorTest.java
+@@ -70,7 +70,7 @@ public class XdocGeneratorTest
+     private void checkMavenXdocGenerator()
+         throws Exception
+     {
+-        ModelloCore modello = (ModelloCore) container.lookup( ModelloCore.ROLE );
++        ModelloCore modello = (ModelloCore) getContainer().lookup( ModelloCore.ROLE );
+ 
+         Model model = modello.loadModel( getXmlResourceReader( "/maven.mdo" ) );
+ 
+diff --git a/modello-plugins/modello-plugin-xml/src/test/java/org/codehaus/modello/plugins/xml/XmlModelloPluginTest.java b/modello-plugins/modello-plugin-xml/src/test/java/org/codehaus/modello/plugins/xml/XmlModelloPluginTest.java
+index d9a2113..ab737bc 100644
+--- a/modello-plugins/modello-plugin-xml/src/test/java/org/codehaus/modello/plugins/xml/XmlModelloPluginTest.java
++++ b/modello-plugins/modello-plugin-xml/src/test/java/org/codehaus/modello/plugins/xml/XmlModelloPluginTest.java
+@@ -55,7 +55,7 @@ public class XmlModelloPluginTest
+     public void testXmlPlugin()
+         throws Exception
+     {
+-        ModelloCore modello = (ModelloCore) container.lookup( ModelloCore.ROLE );
++        ModelloCore modello = (ModelloCore) getContainer().lookup( ModelloCore.ROLE );
+ 
+         Model model = modello.loadModel( getTestFile( "src/test/resources/model.mdo" ) );
+ 
+diff --git a/modello-plugins/modello-plugin-xpp3/src/test/java/org/codehaus/modello/generator/xml/xpp3/_AbstractElementTest.java b/modello-plugins/modello-plugin-xpp3/src/test/java/org/codehaus/modello/generator/xml/xpp3/_AbstractElementTest.java
+index dcb0c21..7b8d6d3 100644
+--- a/modello-plugins/modello-plugin-xpp3/src/test/java/org/codehaus/modello/generator/xml/xpp3/_AbstractElementTest.java
++++ b/modello-plugins/modello-plugin-xpp3/src/test/java/org/codehaus/modello/generator/xml/xpp3/_AbstractElementTest.java
+@@ -44,7 +44,7 @@ public class _AbstractElementTest
+     public void testAbstract()
+         throws Throwable
+     {
+-        ModelloCore modello = (ModelloCore) container.lookup( ModelloCore.ROLE );
++        ModelloCore modello = (ModelloCore) getContainer().lookup( ModelloCore.ROLE );
+ 
+         Model model = modello.loadModel( getXmlResourceReader( "/abstract.mdo" ) );
+ 
+diff --git a/modello-plugins/modello-plugin-xsd/src/test/java/org/codehaus/modello/plugin/xsd/ChangesXsdGeneratorTest.java b/modello-plugins/modello-plugin-xsd/src/test/java/org/codehaus/modello/plugin/xsd/ChangesXsdGeneratorTest.java
+index 6749623..30e499b 100755
+--- a/modello-plugins/modello-plugin-xsd/src/test/java/org/codehaus/modello/plugin/xsd/ChangesXsdGeneratorTest.java
++++ b/modello-plugins/modello-plugin-xsd/src/test/java/org/codehaus/modello/plugin/xsd/ChangesXsdGeneratorTest.java
+@@ -43,7 +43,7 @@ public class ChangesXsdGeneratorTest
+     public void testXsdGenerator()
+         throws Throwable
+     {
+-        ModelloCore modello = (ModelloCore) container.lookup( ModelloCore.ROLE );
++        ModelloCore modello = (ModelloCore) getContainer().lookup( ModelloCore.ROLE );
+ 
+         Model model = modello.loadModel( getXmlResourceReader( "/changes.mdo" ) );
+ 
+diff --git a/modello-plugins/modello-plugin-xsd/src/test/java/org/codehaus/modello/plugin/xsd/XsdGeneratorTest.java b/modello-plugins/modello-plugin-xsd/src/test/java/org/codehaus/modello/plugin/xsd/XsdGeneratorTest.java
+index 4cd0fea..c0a1386 100644
+--- a/modello-plugins/modello-plugin-xsd/src/test/java/org/codehaus/modello/plugin/xsd/XsdGeneratorTest.java
++++ b/modello-plugins/modello-plugin-xsd/src/test/java/org/codehaus/modello/plugin/xsd/XsdGeneratorTest.java
+@@ -48,7 +48,7 @@ public class XsdGeneratorTest
+     public void testXsdGenerator()
+         throws Throwable
+     {
+-        ModelloCore modello = (ModelloCore) container.lookup( ModelloCore.ROLE );
++        ModelloCore modello = (ModelloCore) getContainer().lookup( ModelloCore.ROLE );
+ 
+         Model model = modello.loadModel( getXmlResourceReader( "/maven.mdo" ) );
+ 
+-- 
+1.7.1.1
+
