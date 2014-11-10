@@ -1,7 +1,7 @@
 %{?_javapackages_macros:%_javapackages_macros}
 Name:           modello
-Version:        1.8.1
-Release:        1.1%{?dist}
+Version:        1.8.2
+Release:        1%{?dist}
 Epoch:          0
 Summary:        Modello Data Model toolkit
 # The majority of files are under MIT license, but some of them are
@@ -54,10 +54,12 @@ API documentation for %{name}.
 cp -p %{SOURCE1} LICENSE
 # We don't generate site; don't pull extra dependencies.
 %pom_remove_plugin :maven-site-plugin
+# Avoid using Maven 2.x APIs
+sed -i s/maven-project/maven-core/ modello-maven-plugin/pom.xml
 
 %build
 # skip tests because we have too old xmlunit in Fedora now (1.0.8)
-%mvn_build -f
+%mvn_build -f -- -Dmaven.version=3.1.1
 
 %install
 %mvn_install
