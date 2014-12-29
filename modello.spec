@@ -1,9 +1,10 @@
 %{?_javapackages_macros:%_javapackages_macros}
 Name:           modello
 Version:        1.8.2
-Release:        1%{?dist}
+Release:        1.1
 Epoch:          0
 Summary:        Modello Data Model toolkit
+Group:		Development/Java
 # The majority of files are under MIT license, but some of them are
 # ASL 2.0 or BSD-licensed.
 License:        ASL 2.0 and BSD and MIT
@@ -65,10 +66,6 @@ sed -i s/maven-project/maven-core/ modello-maven-plugin/pom.xml
 %mvn_install
 
 %jpackage_script org.codehaus.modello.ModelloCli "" "" modello:plexus-containers/plexus-container-default:plexus/classworlds:plexus/utils:plexus/plexus-build-api:xbean/xbean-reflect:guava %{name} true
-%if 0%{?fedora}
-%else
-sed -i 's|<version>3.8.2</version>||;' %{buildroot}%{_mavendepmapfragdir}/*
-%endif
 
 %files -f .mfiles
 %dir %{_javadir}/%{name}
