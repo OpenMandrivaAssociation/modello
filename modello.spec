@@ -1,7 +1,7 @@
 %{?_javapackages_macros:%_javapackages_macros}
 Name:           modello
 Version:        1.8.2
-Release:        1.2
+Release:        1.3
 Epoch:          0
 Summary:        Modello Data Model toolkit
 Group:		Development/Java
