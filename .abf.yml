@@ -1,3 +1,5 @@
 sources:
+  modello-2.1.2.tar.gz: d92b2424a935504a282cc373a1fff22aed87a6e7
+removed_sources:
   modello-1.8.1-source-release.zip: cc4c23e949bf642582ee786aa2f66a6a1a33dc82
   modello-1.8.2-source-release.zip: 3b04f0ee732ab374dd809a53c87f3509a076e5c4

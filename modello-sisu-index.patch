@@ -1,0 +1,32 @@
+--- a/modello-core/src/main/java/org/codehaus/modello/Modello.java
++++ b/modello-core/src/main/java/org/codehaus/modello/Modello.java
+@@ -29,6 +29,7 @@
+ import org.codehaus.modello.core.ModelloCore;
+ import org.codehaus.modello.model.Model;
+ import org.codehaus.modello.model.ModelValidationException;
++import org.codehaus.plexus.DefaultContainerConfiguration;
+ import org.codehaus.plexus.DefaultPlexusContainer;
+ import org.codehaus.plexus.PlexusContainer;
+ 
+@@ -43,7 +44,9 @@
+ 
+     public Modello() throws ModelloException {
+         try {
+-            container = new DefaultPlexusContainer();
++            DefaultContainerConfiguration config = new DefaultContainerConfiguration();
++            config.setClassPathScanning("index");
++            container = new DefaultPlexusContainer(config);
+ 
+             core = (ModelloCore) container.lookup(ModelloCore.ROLE);
+         } catch (Exception ex) {
+--- a/modello-core/src/main/java/org/codehaus/modello/plugin/AbstractModelloGenerator.java
++++ b/modello-core/src/main/java/org/codehaus/modello/plugin/AbstractModelloGenerator.java
+@@ -43,7 +43,7 @@
+ import org.codehaus.modello.model.Version;
+ import org.codehaus.plexus.PlexusConstants;
+ import org.codehaus.plexus.PlexusContainer;
+-import org.codehaus.plexus.build.BuildContext;
++import org.sonatype.plexus.build.incremental.BuildContext;
+ import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+ import org.codehaus.plexus.context.Context;
+ import org.codehaus.plexus.context.ContextException;
